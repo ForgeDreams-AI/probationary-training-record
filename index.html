@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Probationary Firefighter Training Record</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Spectral:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f3efe7;
+        --surface: #fffdf8;
+        --surface-2: #faf5ec;
+        --ink: #1d1a15;
+        --muted: #6f675a;
+        --line: #ddd3c1;
+        --line-strong: #c6bba3;
+        --accent: #a51f1f;
+        --accent-hover: #8c1818;
+        --accent-ink: #ffffff;
+        --ok: #2e7d43;
+        --warn: #9a6200;
+        --err: #b3261e;
+        --field-bg: #ffffff;
+        --sheet: #ffffff;
+        --sheet-ink: #141414;
+        --sheet-line: #2b2b2b;
+        --shadow: 0 1px 2px rgba(29, 26, 21, 0.06), 0 8px 24px rgba(29, 26, 21, 0.07);
+        --radius: 10px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #14110d;
+          --surface: #1f1b15;
+          --surface-2: #262119;
+          --ink: #ede7da;
+          --muted: #a89c89;
+          --line: #3b342a;
+          --line-strong: #554a3a;
+          --accent: #e0574a;
+          --accent-hover: #ec7264;
+          --accent-ink: #1c0f0d;
+          --ok: #6fc287;
+          --warn: #e0a83e;
+          --err: #ef8a80;
+          --field-bg: #171410;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Libre Franklin", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      button, input, textarea, select { font: inherit; color: inherit; }
+      a { color: var(--accent); }
+      :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 20px 16px 64px; }
+      .hidden { display: none !important; }
+
+      /* ---------- buttons ---------- */
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        padding: 10px 18px; border-radius: 8px; border: 1px solid var(--line-strong);
+        background: var(--surface); color: var(--ink); font-weight: 600; font-size: 15px;
+        cursor: pointer; text-decoration: none; transition: background 0.15s, border-color 0.15s;
+      }
+      .btn:hover { background: var(--surface-2); }
+      .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+      .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+      .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+      .btn-ms { background: #ffffff; color: #1b1b1b; border-color: #c8c8c8; font-weight: 600; }
+      .btn-ms:hover { background: #f3f3f3; }
+      .btn-small { padding: 7px 12px; font-size: 14px; border-radius: 7px; }
+      .btn-danger-ghost { color: var(--err); border-color: transparent; background: transparent; }
+      .btn-danger-ghost:hover { background: transparent; text-decoration: underline; }
+      .link-btn { background: none; border: none; padding: 0; color: var(--accent); font-weight: 600; cursor: pointer; }
+      .link-btn:hover { text-decoration: underline; }
+
+      /* ---------- welcome / sign-in ---------- */
+      .welcome { max-width: 640px; margin: 4vh auto 0; }
+      .form-eyebrow {
+        text-align: center; font-size: 12.5px; font-weight: 700; letter-spacing: 0.14em;
+        text-transform: uppercase; color: var(--muted); margin: 0 0 14px;
+      }
+      .welcome h1 {
+        font-family: "Spectral", Georgia, serif; font-weight: 700; text-align: center;
+        font-size: clamp(28px, 5.4vw, 40px); line-height: 1.15; margin: 0 0 6px;
+      }
+      .welcome .due { text-align: center; color: var(--muted); font-size: 15px; margin: 0 0 26px; }
+      .rule { height: 3px; background: var(--accent); border-radius: 2px; width: 72px; margin: 0 auto 26px; }
+      .card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow); padding: 24px;
+      }
+      .card h2 { margin: 0 0 8px; font-size: 18px; font-weight: 700; }
+      .card p { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+      .card p strong { color: var(--ink); }
+      .signin-row { display: flex; flex-direction: column; gap: 12px; align-items: stretch; margin-top: 18px; }
+      .signin-row .btn { width: 100%; padding: 13px 18px; font-size: 16px; }
+      .privacy-points { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+      .privacy-points li { display: flex; gap: 10px; font-size: 14.5px; color: var(--muted); }
+      .privacy-points svg { flex: 0 0 auto; margin-top: 2px; }
+      .privacy-points strong { color: var(--ink); font-weight: 600; }
+      .msg { border-radius: 8px; padding: 12px 14px; font-size: 14.5px; margin-top: 16px; display: none; }
+      .msg.show { display: block; }
+      .msg.error { background: rgba(179, 38, 30, 0.1); border: 1px solid var(--err); color: var(--err); }
+      .msg.info { background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); }
+
+      details.setup { margin-top: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+      details.setup summary { cursor: pointer; padding: 16px 20px; font-weight: 700; font-size: 15.5px; }
+      details.setup .setup-body { padding: 0 20px 20px; }
+      details.setup ol { margin: 0 0 14px; padding-left: 20px; color: var(--muted); font-size: 14.5px; display: grid; gap: 7px; }
+      details.setup ol strong, details.setup code { color: var(--ink); }
+      details.setup code { font-size: 13px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; word-break: break-all; }
+      .clientid-row { display: flex; gap: 8px; flex-wrap: wrap; }
+      .clientid-row input { flex: 1 1 260px; }
+
+      /* ---------- fields ---------- */
+      label.field-label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+      input[type="text"], input[type="email"], input[type="date"], input[type="month"], textarea, select {
+        width: 100%; background: var(--field-bg); border: 1px solid var(--line-strong);
+        border-radius: 7px; padding: 9px 11px; font-size: 15px;
+      }
+      textarea { resize: vertical; min-height: 44px; line-height: 1.45; }
+      input:focus, textarea:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 2px rgba(165, 31, 31, 0.18); }
+      .field-note { font-size: 12.5px; color: var(--muted); margin-top: 5px; }
+
+      /* ---------- app layout ---------- */
+      .account-bar {
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow); padding: 12px 16px; margin-bottom: 18px;
+      }
+      .avatar {
+        width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+        display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex: 0 0 auto;
+      }
+      .account-bar .who { min-width: 0; }
+      .account-bar .who .name { font-weight: 700; font-size: 15.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .account-bar .who .email { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .account-bar .spacer { flex: 1; }
+      .status-pill {
+        display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600;
+        border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; background: var(--surface-2); color: var(--muted);
+      }
+      .status-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: 0 0 auto; }
+      .status-pill.saved { color: var(--ok); } .status-pill.saved .dot { background: var(--ok); }
+      .status-pill.saving { color: var(--warn); } .status-pill.saving .dot { background: var(--warn); }
+      .status-pill.error { color: var(--err); } .status-pill.error .dot { background: var(--err); }
+      .banner {
+        border: 1px solid var(--warn); background: rgba(224, 168, 62, 0.12); color: var(--ink);
+        border-radius: var(--radius); padding: 12px 16px; font-size: 14.5px; margin-bottom: 18px;
+      }
+      .panel {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow); padding: 22px; margin-bottom: 18px;
+      }
+      .panel h2 { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
+      .panel .sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+      .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .profile-grid .wide { grid-column: 1 / -1; }
+      @media (max-width: 640px) { .profile-grid { grid-template-columns: 1fr; } }
+
+      .entries-head { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+      .entries-head h2 { margin: 0; }
+      .entries-head .spacer { flex: 1; }
+      .month-pick { display: flex; align-items: flex-end; gap: 8px; }
+      .month-pick input { width: 180px; }
+      .entries-table-head, .entry-row {
+        display: grid; grid-template-columns: 168px 1fr 1.35fr 44px; gap: 12px; align-items: start;
+      }
+      .entries-table-head { padding: 14px 2px 8px; border-bottom: 2px solid var(--line-strong); font-size: 13px; font-weight: 700; color: var(--muted); }
+      .entry-row { padding: 12px 2px; border-bottom: 1px solid var(--line); }
+      .entry-row .cell-label { display: none; }
+      .entry-row .del { margin-top: 4px; }
+      .empty-note { padding: 26px 8px; text-align: center; color: var(--muted); font-size: 15px; }
+      @media (max-width: 720px) {
+        .entries-table-head { display: none; }
+        .entry-row { grid-template-columns: 1fr 44px; grid-template-areas: "date del" "training del" "comments del"; row-gap: 10px; }
+        .entry-row .c-date { grid-area: date; } .entry-row .c-training { grid-area: training; }
+        .entry-row .c-comments { grid-area: comments; } .entry-row .del { grid-area: del; }
+        .entry-row .cell-label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+        .entry-row input[type="date"] { max-width: 200px; }
+      }
+
+      /* ---------- report sheet ---------- */
+      .sheet-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+      .sheet-actions .spacer { flex: 1; }
+      .sheet-scroll { overflow-x: auto; padding-bottom: 4px; }
+      .sheet {
+        background: var(--sheet); color: var(--sheet-ink); border: 1px solid var(--line-strong);
+        box-shadow: var(--shadow); padding: 40px 44px 48px; min-width: 640px;
+        font-family: Georgia, "Times New Roman", serif;
+      }
+      .sheet .sheet-top { text-align: center; font-size: 12.5px; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 20px; }
+      .sheet h3 { text-align: center; font-family: "Spectral", Georgia, serif; font-size: 22px; margin: 0 0 2px; font-weight: 700; }
+      .sheet .sheet-due { text-align: center; font-size: 14px; margin: 0 0 26px; }
+      .sheet .id-grid { display: grid; grid-template-columns: 2.2fr 1fr 0.7fr 1.6fr; gap: 18px; margin-bottom: 20px; font-size: 14px; }
+      .sheet .id-grid .val { border-bottom: 1.5px solid var(--sheet-ink); min-height: 22px; padding: 0 2px 2px; font-size: 15px; }
+      .sheet .id-grid .lbl { font-size: 12.5px; margin-top: 3px; }
+      .sheet table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+      .sheet th, .sheet td { border: 1.5px solid var(--sheet-line); padding: 8px 10px; vertical-align: top; text-align: left; }
+      .sheet th { background: #e8e8e8; font-size: 14px; }
+      .sheet td.d { white-space: nowrap; width: 110px; }
+      .sheet td.t { width: 34%; }
+      .sheet td .rowtext { white-space: pre-wrap; word-break: break-word; }
+      .sheet tr.blank td { height: 52px; }
+      .sheet .sheet-foot { margin-top: 14px; font-size: 12.5px; color: #444; }
+
+      /* ---------- modal / toast ---------- */
+      .modal-backdrop {
+        position: fixed; inset: 0; background: rgba(10, 8, 6, 0.55); display: flex;
+        align-items: center; justify-content: center; padding: 16px; z-index: 50;
+      }
+      .modal { background: var(--surface); border-radius: 12px; border: 1px solid var(--line); box-shadow: var(--shadow); max-width: 440px; width: 100%; padding: 24px; }
+      .modal h3 { margin: 0 0 8px; font-size: 17px; }
+      .modal p { margin: 0 0 16px; color: var(--muted); font-size: 14.5px; }
+      .modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+      #toast {
+        position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(20px);
+        background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 9px; font-size: 14.5px;
+        font-weight: 600; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+        z-index: 60; max-width: calc(100vw - 32px); text-align: center;
+      }
+      #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+      #toast.err { background: var(--err); color: #fff; }
+
+      footer.foot { text-align: center; color: var(--muted); font-size: 13px; margin-top: 28px; }
+
+      @media print {
+        body { background: #fff; }
+        .no-print { display: none !important; }
+        .wrap { max-width: none; padding: 0; }
+        .sheet-scroll { overflow: visible; }
+        .sheet { box-shadow: none; border: none; min-width: 0; padding: 12px 8px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- ================= WELCOME / SIGN-IN ================= -->
+      <section id="view-welcome" class="welcome">
+        <p class="form-eyebrow">Sample form — completed digitally, attached to monthly progress report</p>
+        <h1>Probationary Firefighter Training Record</h1>
+        <p class="due">(Due with Monthly Grading Report)</p>
+        <div class="rule"></div>
+
+        <div class="card">
+          <h2>Sign in with your Phoenix.gov account</h2>
+          <p>
+            Your training record lives in <strong>your own OneDrive</strong> — saved under your
+            <strong>@phoenix.gov</strong> Microsoft account, in this app's private folder. You sign in as
+            yourself, your entries back up to your account, and <strong>no one else can see them</strong> —
+            not other firefighters, not the person who shared this page with you.
+          </p>
+          <ul class="privacy-points">
+            <li>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <span><strong>Only @phoenix.gov accounts get in.</strong> Any other email is turned away.</span>
+            </li>
+            <li>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 0 0 .4-8.98 6.5 6.5 0 0 0-12.6 1.6A4 4 0 0 0 6 19h11.5z"/></svg>
+              <span><strong>One record file, in your OneDrive app folder</strong> (<code>training-record.json</code>) — it follows your account to any device.</span>
+            </li>
+            <li>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+              <span><strong>Send each month's report to your training officer</strong> straight from the app, from your own mailbox.</span>
+            </li>
+          </ul>
+
+          <div id="signin-msg" class="msg" role="alert"></div>
+
+          <div class="signin-row">
+            <button id="btn-signin" class="btn btn-ms" type="button">
+              <svg width="20" height="20" viewBox="0 0 23 23" aria-hidden="true"><rect x="1" y="1" width="10" height="10" fill="#f25022"/><rect x="12" y="1" width="10" height="10" fill="#7fba00"/><rect x="1" y="12" width="10" height="10" fill="#00a4ef"/><rect x="12" y="12" width="10" height="10" fill="#ffb900"/></svg>
+              Sign in with Microsoft
+            </button>
+            <button id="btn-preview" class="btn" type="button">Preview the form first</button>
+          </div>
+        </div>
+
+        <details class="setup" id="setup-details">
+          <summary>First-time setup — connect this page to Microsoft (one time)</summary>
+          <div class="setup-body">
+            <p style="color: var(--muted); font-size: 14.5px; margin-top: 0;">
+              This page talks directly to Microsoft Graph — there's no shared server. It needs its own
+              (free) app registration so Microsoft knows it's allowed to ask for sign-in:
+            </p>
+            <ol>
+              <li>Go to <strong>portal.azure.com</strong> → <strong>App registrations</strong> → <strong>New registration</strong>. Name it <strong>Probationary Training Record</strong>, and choose <strong>Accounts in any organizational directory</strong>.</li>
+              <li>Under <strong>Redirect URI</strong>, pick <strong>Single-page application (SPA)</strong> and enter the exact web address of this page.</li>
+              <li>Open the app → <strong>API permissions</strong> → <strong>Add a permission</strong> → <strong>Microsoft Graph</strong> → <strong>Delegated</strong>, and add: <code>User.Read</code>, <code>Files.ReadWrite.AppFolder</code>, and <code>Mail.Send</code>. (If sign-in later fails with a permissions error, a city IT admin may need to grant consent for these.)</li>
+              <li>Copy the <strong>Application (client) ID</strong> from the app's Overview page and paste it here. It's stored only in this browser, only to configure sign-in.</li>
+            </ol>
+            <div class="clientid-row">
+              <input type="text" id="input-clientid" placeholder="Application (client) ID — e.g. 00000000-0000-0000-0000-000000000000" autocomplete="off" spellcheck="false" />
+              <button id="btn-save-clientid" class="btn btn-primary" type="button">Save</button>
+            </div>
+            <p class="field-note" id="clientid-note">No client ID saved yet — sign-in stays off until one is added.</p>
+            <p style="color: var(--muted); font-size: 14.5px; margin-bottom: 0;">
+              Hosting this page in public — for example on GitHub Pages — is still secure. The page itself
+              holds no records and no secrets: the client ID is a public identifier, not a password. Security
+              comes from Microsoft — only @phoenix.gov accounts can sign in, and every record stays in that
+              firefighter's own OneDrive.
+            </p>
+          </div>
+        </details>
+      </section>
+
+      <!-- ================= APP ================= -->
+      <section id="view-app" class="hidden">
+        <div class="account-bar no-print">
+          <div class="avatar" id="avatar-initials">–</div>
+          <div class="who">
+            <div class="name" id="bar-name">Not signed in</div>
+            <div class="email" id="bar-email"></div>
+          </div>
+          <div class="spacer"></div>
+          <span class="status-pill" id="save-status"><span class="dot"></span><span id="save-status-text">Not saved</span></span>
+          <button id="btn-signout" class="btn btn-small" type="button">Sign out</button>
+        </div>
+
+        <div class="banner hidden" id="preview-banner">
+          <strong>Preview mode.</strong> You're looking at sample entries so you can see how the form works.
+          Nothing here is saved — sign in with your @phoenix.gov account and your real record is stored in your own OneDrive.
+          <button class="link-btn" type="button" id="btn-exit-preview">Back to sign-in</button>
+        </div>
+
+        <div class="panel no-print">
+          <h2>Firefighter information</h2>
+          <p class="sub">This goes at the top of every monthly report. Changes save to your OneDrive automatically.</p>
+          <div class="profile-grid">
+            <div>
+              <label class="field-label" for="f-name">Probationary Firefighter</label>
+              <input type="text" id="f-name" autocomplete="name" />
+            </div>
+            <div>
+              <label class="field-label" for="f-captain">Captain</label>
+              <input type="text" id="f-captain" />
+            </div>
+            <div>
+              <label class="field-label" for="f-company">Company</label>
+              <input type="text" id="f-company" placeholder="e.g. Engine 13" />
+            </div>
+            <div>
+              <label class="field-label" for="f-shift">Shift</label>
+              <input type="text" id="f-shift" placeholder="e.g. C Shift" />
+            </div>
+            <div class="wide">
+              <label class="field-label" for="f-officer">Training officer email</label>
+              <input type="email" id="f-officer" placeholder="officer@phoenix.gov" autocomplete="email" />
+              <p class="field-note">The Send button on the monthly report emails that month's record to this address, from your own mailbox. Saved in your OneDrive record so it's here on every device.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel no-print">
+          <div class="entries-head">
+            <div>
+              <h2>Training entries</h2>
+              <p class="sub" style="margin: 0;">One row per training, like the paper form.</p>
+            </div>
+            <div class="spacer"></div>
+            <div class="month-pick">
+              <div>
+                <label class="field-label" for="month-input">Month</label>
+                <input type="month" id="month-input" />
+              </div>
+              <button id="btn-show-all" class="btn btn-small" type="button">Show all</button>
+              <button id="btn-add-entry" class="btn btn-primary btn-small" type="button">+ Add entry</button>
+            </div>
+          </div>
+          <div class="entries-table-head" aria-hidden="true">
+            <div>Date</div><div>Training</div><div>Comments</div><div></div>
+          </div>
+          <div id="entries-list"></div>
+          <div id="entries-empty" class="empty-note hidden">No entries for this month yet. Tap <strong>+ Add entry</strong> to log the first one.</div>
+        </div>
+
+        <div class="panel" id="sheet-panel" style="padding: 22px;">
+          <div class="sheet-actions no-print">
+            <div>
+              <h2 style="margin: 0; font-size: 18px;">Monthly report</h2>
+              <p class="sub" style="margin: 0;" id="sheet-sub">Ready to attach to the Monthly Grading Report.</p>
+            </div>
+            <div class="spacer"></div>
+            <span class="field-note" style="margin: 0;">Tip: your browser's Print saves just this sheet as a PDF.</span>
+            <button id="btn-download" class="btn btn-small" type="button">Download backup (.json)</button>
+            <button id="btn-send" class="btn btn-primary btn-small" type="button">Send to training officer</button>
+          </div>
+          <div class="sheet-scroll">
+            <div class="sheet" id="sheet"></div>
+          </div>
+        </div>
+
+        <footer class="foot no-print">Your record is stored only in your own OneDrive app folder, under your @phoenix.gov account.</footer>
+      </section>
+
+    <!-- officer email modal -->
+    <div class="modal-backdrop hidden" id="officer-modal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="officer-modal-title">
+        <h3 id="officer-modal-title">Who's your training officer?</h3>
+        <p>Enter their email once — it's saved in your OneDrive record for every future report, and this month's report will be sent from your mailbox.</p>
+        <label class="field-label" for="officer-modal-input">Training officer email</label>
+        <input type="email" id="officer-modal-input" placeholder="officer@phoenix.gov" autocomplete="email" />
+        <div class="modal-actions">
+          <button class="btn" type="button" id="officer-modal-cancel">Cancel</button>
+          <button class="btn btn-primary" type="button" id="officer-modal-save">Save &amp; send report</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" role="status"></div>
+
+    <script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
+    <script>
+      "use strict";
+
+      var GRAPH = "https://graph.microsoft.com/v1.0";
+      var SCOPES = ["User.Read", "Files.ReadWrite.AppFolder", "Mail.Send"];
+      var FILE_NAME = "training-record.json";
+      var LS_CLIENT_ID = "pftr.clientId";
+      /* Pages distribution: the shared default client ID for ALL visitors.
+         Paste the Azure Application (client) ID here once the app is
+         registered (see README.md). It is a public identifier, not a
+         secret. Leave empty until then and sign-in stays off. A visitor
+         can still override it for their own browser via the setup
+         section below, which saves to localStorage (pftr.clientId) and
+         takes precedence over this default. */
+      var DEFAULT_CLIENT_ID = "";
+
+      var state = {
+        clientId: null,
+        pca: null,
+        account: null,
+        email: "",
+        displayName: "",
+        record: null,
+        preview: false,
+        showAll: false,
+        month: monthKeyOf(new Date()),
+        saveTimer: null,
+        saving: false
+      };
+
+      /* ---------------- utilities ---------------- */
+      function $(id) { return document.getElementById(id); }
+      function esc(s) {
+        return String(s == null ? "" : s)
+          .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+      }
+      function uid() { return "e" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+      function pad2(n) { return (n < 10 ? "0" : "") + n; }
+      function monthKeyOf(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1); }
+      function todayISO() {
+        var d = new Date();
+        return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+      }
+      function fmtDate(iso) {
+        if (!iso) return "";
+        var parts = String(iso).split("-");
+        if (parts.length !== 3) return iso;
+        var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        var m = parseInt(parts[1], 10);
+        return (months[m - 1] || parts[1]) + " " + parseInt(parts[2], 10) + ", " + parts[0];
+      }
+      function monthLabel(key) {
+        var parts = String(key || "").split("-");
+        if (parts.length !== 2) return key || "";
+        var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        return (months[parseInt(parts[1], 10) - 1] || parts[1]) + " " + parts[0];
+      }
+      var toastTimer = null;
+      function toast(msg, isErr) {
+        var t = $("toast");
+        t.textContent = msg;
+        t.className = isErr ? "show err" : "show";
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { t.className = ""; }, 4200);
+      }
+      function storeGet(key) { try { return window.localStorage.getItem(key); } catch (e) { return null; } }
+      function storeSet(key, val) { try { window.localStorage.setItem(key, val); } catch (e) {} }
+      function storeDel(key) { try { window.localStorage.removeItem(key); } catch (e) {} }
+
+      /* ---------------- record model ---------------- */
+      function blankRecord() {
+        return {
+          version: 1,
+          profile: { name: "", company: "", shift: "", captain: "", officerEmail: "" },
+          entries: [],
+          updatedAt: null
+        };
+      }
+      function normalizeRecord(raw) {
+        var rec = blankRecord();
+        if (!raw || typeof raw !== "object") return rec;
+        if (raw.profile && typeof raw.profile === "object") {
+          ["name", "company", "shift", "captain", "officerEmail"].forEach(function (k) {
+            if (typeof raw.profile[k] === "string") rec.profile[k] = raw.profile[k];
+          });
+        }
+        if (Array.isArray(raw.entries)) {
+          raw.entries.forEach(function (e) {
+            if (e && typeof e === "object") {
+              rec.entries.push({
+                id: typeof e.id === "string" && e.id ? e.id : uid(),
+                date: typeof e.date === "string" ? e.date : "",
+                training: typeof e.training === "string" ? e.training : "",
+                comments: typeof e.comments === "string" ? e.comments : ""
+              });
+            }
+          });
+        }
+        if (typeof raw.updatedAt === "string") rec.updatedAt = raw.updatedAt;
+        return rec;
+      }
+      function sampleRecord() {
+        var rec = blankRecord();
+        rec.profile = { name: "Sample Firefighter", company: "Engine 13", shift: "C Shift", captain: "Capt. Example", officerEmail: "" };
+        var t = todayISO();
+        rec.entries = [
+          { id: uid(), date: t, training: "Sample entry — hose lays and hydrant connections", comments: "Delete these sample rows and log your own training once you're signed in." },
+          { id: uid(), date: t, training: "Sample entry — ladder raises, 24 ft extension", comments: "" }
+        ];
+        return rec;
+      }
+      function sortedEntries() {
+        var list = state.record.entries.slice();
+        list.sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
+        return list;
+      }
+      function visibleEntries() {
+        var list = sortedEntries();
+        if (state.showAll) return list;
+        return list.filter(function (e) { return String(e.date || "").slice(0, 7) === state.month; });
+      }
+
+      /* ---------------- save status ---------------- */
+      function setStatus(kind, text) {
+        var pill = $("save-status");
+        pill.className = "status-pill" + (kind ? " " + kind : "");
+        $("save-status-text").textContent = text;
+      }
+      function markDirty() {
+        if (state.preview) { setStatus("", "Preview — not saved"); return; }
+        setStatus("saving", "Unsaved changes…");
+        if (state.saveTimer) clearTimeout(state.saveTimer);
+        state.saveTimer = setTimeout(function () { saveRecord(); }, 1200);
+      }
+      function timeNow() {
+        var d = new Date();
+        var h = d.getHours(), m = pad2(d.getMinutes()), ap = h >= 12 ? "PM" : "AM";
+        h = h % 12; if (h === 0) h = 12;
+        return h + ":" + m + " " + ap;
+      }
+
+      /* ---------------- MSAL / Graph ---------------- */
+      function pageUrl() {
+        return window.location.href.split("#")[0].split("?")[0];
+      }
+      function buildPca() {
+        if (!window.msal) return null;
+        return new window.msal.PublicClientApplication({
+          auth: {
+            clientId: state.clientId,
+            authority: "https://login.microsoftonline.com/common",
+            redirectUri: pageUrl()
+          },
+          cache: { cacheLocation: "sessionStorage", storeAuthStateInCookie: false }
+        });
+      }
+      function showSigninMsg(msg) {
+        var el = $("signin-msg");
+        el.textContent = msg;
+        el.className = "msg show error";
+      }
+      function hideSigninMsg() { $("signin-msg").className = "msg"; }
+
+      async function ensurePca() {
+        if (state.pca) return state.pca;
+        state.pca = buildPca();
+        if (state.pca && state.pca.initialize) { try { await state.pca.initialize(); } catch (e) {} }
+        return state.pca;
+      }
+
+      async function signIn() {
+        hideSigninMsg();
+        if (!state.clientId) {
+          $("setup-details").open = true;
+          showSigninMsg("Sign-in isn't connected yet. Open the setup below, register the app with Microsoft, and paste the Application (client) ID — that only has to happen once.");
+          $("input-clientid").focus();
+          return;
+        }
+        if (!window.msal) {
+          showSigninMsg("The Microsoft sign-in library couldn't load. Check your connection and reload the page.");
+          return;
+        }
+        var btn = $("btn-signin");
+        btn.disabled = true;
+        btn.textContent = "Opening Microsoft sign-in…";
+        try {
+          var pca = await ensurePca();
+          var result = await pca.loginPopup({ scopes: SCOPES, prompt: "select_account" });
+          var account = result.account;
+          var email = (account && (account.username || "")) || "";
+          if (!/@phoenix\.gov$/i.test(email)) {
+            try { await pca.logoutPopup({ account: account }); } catch (e) {}
+            showSigninMsg("That sign-in used " + (email || "an unknown account") + ", which isn't a @phoenix.gov address. This record is only for Phoenix.gov accounts — sign in with your department email.");
+            return;
+          }
+          state.account = account;
+          state.email = email;
+          await afterSignIn();
+        } catch (err) {
+          if (err && err.errorCode === "user_cancelled") {
+            /* user closed the popup — stay quiet */
+          } else {
+            showSigninMsg("Sign-in didn't finish: " + describeErr(err) + " If it mentions permissions or consent, a city IT admin may need to approve this app's Microsoft Graph permissions (User.Read, Files.ReadWrite.AppFolder, Mail.Send).");
+          }
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 23 23" aria-hidden="true"><rect x="1" y="1" width="10" height="10" fill="#f25022"/><rect x="12" y="1" width="10" height="10" fill="#7fba00"/><rect x="1" y="12" width="10" height="10" fill="#00a4ef"/><rect x="12" y="12" width="10" height="10" fill="#ffb900"/></svg> Sign in with Microsoft';
+        }
+      }
+
+      function describeErr(err) {
+        if (!err) return "unknown error";
+        if (err.errorMessage) return err.errorMessage;
+        if (err.message) return err.message;
+        return String(err);
+      }
+
+      async function getToken() {
+        var pca = await ensurePca();
+        var req = { scopes: SCOPES, account: state.account };
+        try {
+          var res = await pca.acquireTokenSilent(req);
+          return res.accessToken;
+        } catch (e) {
+          var res2 = await pca.acquireTokenPopup({ scopes: SCOPES });
+          if (res2.account) state.account = res2.account;
+          return res2.accessToken;
+        }
+      }
+
+      async function graphFetch(path, options) {
+        var token = await getToken();
+        var opts = options || {};
+        opts.headers = Object.assign({}, opts.headers || {}, { Authorization: "Bearer " + token });
+        return fetch(GRAPH + path, opts);
+      }
+
+      function appFolderPath() {
+        return "/me/drive/special/approot:/" + encodeURIComponent(FILE_NAME) + ":/content";
+      }
+
+      async function loadRecordFromOneDrive() {
+        var res = await graphFetch(appFolderPath(), { method: "GET" });
+        if (res.status === 404) {
+          var rec = blankRecord();
+          rec.profile.name = state.displayName || "";
+          state.record = rec;
+          await saveRecord(true);
+          return;
+        }
+        if (!res.ok) throw new Error("OneDrive read failed (" + res.status + ")");
+        var text = await res.text();
+        var parsed = null;
+        try { parsed = JSON.parse(text); } catch (e) { parsed = null; }
+        state.record = normalizeRecord(parsed);
+        if (!state.record.profile.name && state.displayName) state.record.profile.name = state.displayName;
+      }
+
+      async function saveRecord(silent) {
+        if (state.preview || !state.record) return;
+        if (state.saving) { markDirty(); return; }
+        state.saving = true;
+        setStatus("saving", "Saving to OneDrive…");
+        try {
+          state.record.updatedAt = new Date().toISOString();
+          var res = await graphFetch(appFolderPath(), {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(state.record, null, 2)
+          });
+          if (!res.ok) throw new Error("OneDrive write failed (" + res.status + ")");
+          setStatus("saved", "Saved to your OneDrive · " + timeNow());
+          if (!silent) toast("Saved to your OneDrive");
+        } catch (err) {
+          setStatus("error", "Save failed — check connection");
+          toast("Couldn't save to OneDrive: " + describeErr(err), true);
+        } finally {
+          state.saving = false;
+        }
+      }
+
+      async function afterSignIn() {
+        setStatus("saving", "Loading your record…");
+        try {
+          var res = await graphFetch("/me", { method: "GET" });
+          if (res.ok) {
+            var me = await res.json();
+            state.displayName = me.displayName || "";
+            if (me.mail) state.email = me.mail;
+          }
+        } catch (e) { /* profile prefill is best-effort */ }
+        try {
+          await loadRecordFromOneDrive();
+        } catch (err) {
+          state.record = blankRecord();
+          state.record.profile.name = state.displayName || "";
+          toast("Couldn't load your OneDrive record (" + describeErr(err) + "). Starting fresh — saving will create the file.", true);
+        }
+        enterApp();
+        setStatus("saved", "Saved to your OneDrive");
+      }
+
+      async function signOut() {
+        var pca = state.pca;
+        var account = state.account;
+        state.account = null; state.record = null; state.preview = false;
+        if (state.saveTimer) clearTimeout(state.saveTimer);
+        showWelcome();
+        if (pca && account) {
+          try { await pca.logoutPopup({ account: account }); } catch (e) {}
+        }
+      }
+
+      /* ---------------- email the monthly report ---------------- */
+      function reportRows(monthKey) {
+        return sortedEntries().filter(function (e) { return String(e.date || "").slice(0, 7) === monthKey; });
+      }
+      function buildEmailHtml(monthKey) {
+        var p = state.record.profile;
+        var rows = reportRows(monthKey);
+        var trs = rows.map(function (e) {
+          return "<tr><td style='border:1px solid #444;padding:6px 8px;white-space:nowrap;'>" + esc(fmtDate(e.date)) + "</td>" +
+            "<td style='border:1px solid #444;padding:6px 8px;'>" + esc(e.training) + "</td>" +
+            "<td style='border:1px solid #444;padding:6px 8px;'>" + esc(e.comments) + "</td></tr>";
+        }).join("");
+        if (!trs) trs = "<tr><td colspan='3' style='border:1px solid #444;padding:6px 8px;'>No training entries recorded this month.</td></tr>";
+        return "<div style='font-family:Georgia,serif;color:#111;'>" +
+          "<h2 style='text-align:center;margin-bottom:2px;'>Probationary Firefighter Training Record</h2>" +
+          "<p style='text-align:center;margin-top:0;'>(Due with Monthly Grading Report) — " + esc(monthLabel(monthKey)) + "</p>" +
+          "<p>Probationary Firefighter: <strong>" + esc(p.name) + "</strong> &nbsp;·&nbsp; Company: <strong>" + esc(p.company) + "</strong> &nbsp;·&nbsp; Shift: <strong>" + esc(p.shift) + "</strong> &nbsp;·&nbsp; Captain: <strong>" + esc(p.captain) + "</strong></p>" +
+          "<table style='border-collapse:collapse;width:100%;font-size:14px;'><thead><tr>" +
+          "<th style='border:1px solid #444;padding:6px 8px;text-align:left;background:#e8e8e8;'>Date</th>" +
+          "<th style='border:1px solid #444;padding:6px 8px;text-align:left;background:#e8e8e8;'>Training</th>" +
+          "<th style='border:1px solid #444;padding:6px 8px;text-align:left;background:#e8e8e8;'>Comments</th></tr></thead>" +
+          "<tbody>" + trs + "</tbody></table></div>";
+      }
+
+      async function sendReport() {
+        if (state.preview) {
+          toast("Preview mode — sign in with your @phoenix.gov account to email your report.", true);
+          return;
+        }
+        var officer = (state.record.profile.officerEmail || "").trim();
+        if (!officer) {
+          $("officer-modal").classList.remove("hidden");
+          $("officer-modal-input").value = "";
+          $("officer-modal-input").focus();
+          return;
+        }
+        await doSendReport(officer);
+      }
+
+      async function doSendReport(officer) {
+        var btn = $("btn-send");
+        btn.disabled = true;
+        btn.textContent = "Sending…";
+        try {
+          var monthKey = state.month;
+          var p = state.record.profile;
+          var payload = {
+            message: {
+              subject: "Probationary Firefighter Training Record — " + monthLabel(monthKey) + (p.name ? " — " + p.name : ""),
+              body: { contentType: "HTML", content: buildEmailHtml(monthKey) },
+              toRecipients: [{ emailAddress: { address: officer } }]
+            },
+            saveToSentItems: true
+          };
+          var res = await graphFetch("/me/sendMail", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error("Mail send failed (" + res.status + ")");
+          toast(monthLabel(monthKey) + " report sent to " + officer);
+        } catch (err) {
+          toast("Couldn't send the report: " + describeErr(err), true);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Send to training officer";
+        }
+      }
+
+      /* ---------------- rendering ---------------- */
+      function showWelcome() {
+        $("view-welcome").classList.remove("hidden");
+        $("view-app").classList.add("hidden");
+      }
+      function enterApp() {
+        $("view-welcome").classList.add("hidden");
+        $("view-app").classList.remove("hidden");
+        $("preview-banner").classList.toggle("hidden", !state.preview);
+        $("btn-signout").textContent = state.preview ? "Exit preview" : "Sign out";
+        var name = state.preview ? "Preview" : (state.displayName || state.record.profile.name || "Firefighter");
+        $("bar-name").textContent = state.preview ? "Preview mode" : name;
+        $("bar-email").textContent = state.preview ? "Not signed in — nothing is saved" : state.email;
+        var initials = name.split(/\s+/).map(function (w) { return w.charAt(0); }).join("").slice(0, 2).toUpperCase() || "–";
+        $("avatar-initials").textContent = initials;
+        $("month-input").value = state.month;
+        fillProfile();
+        renderEntries();
+        renderSheet();
+        if (state.preview) setStatus("", "Preview — not saved");
+      }
+      function fillProfile() {
+        var p = state.record.profile;
+        $("f-name").value = p.name || "";
+        $("f-company").value = p.company || "";
+        $("f-shift").value = p.shift || "";
+        $("f-captain").value = p.captain || "";
+        $("f-officer").value = p.officerEmail || "";
+      }
+
+      function renderEntries() {
+        var list = $("entries-list");
+        list.innerHTML = "";
+        var entries = visibleEntries();
+        $("entries-empty").classList.toggle("hidden", entries.length > 0);
+        $("btn-show-all").textContent = state.showAll ? "This month only" : "Show all";
+        entries.forEach(function (entry) {
+          var row = document.createElement("div");
+          row.className = "entry-row";
+
+          var cDate = document.createElement("div");
+          cDate.className = "c-date";
+          cDate.innerHTML = '<span class="cell-label">Date</span>';
+          var dIn = document.createElement("input");
+          dIn.type = "date"; dIn.value = entry.date || "";
+          dIn.setAttribute("aria-label", "Training date");
+          dIn.addEventListener("change", function () {
+            entry.date = dIn.value;
+            markDirty(); renderSheet();
+          });
+          cDate.appendChild(dIn);
+
+          var cTr = document.createElement("div");
+          cTr.className = "c-training";
+          cTr.innerHTML = '<span class="cell-label">Training</span>';
+          var tIn = document.createElement("textarea");
+          tIn.rows = 2; tIn.value = entry.training || "";
+          tIn.placeholder = "What did you train on?";
+          tIn.setAttribute("aria-label", "Training");
+          tIn.addEventListener("input", function () {
+            entry.training = tIn.value;
+            markDirtyDebouncedSheet();
+          });
+          cTr.appendChild(tIn);
+
+          var cCo = document.createElement("div");
+          cCo.className = "c-comments";
+          cCo.innerHTML = '<span class="cell-label">Comments</span>';
+          var coIn = document.createElement("textarea");
+          coIn.rows = 2; coIn.value = entry.comments || "";
+          coIn.placeholder = "Notes, scores, sign-offs…";
+          coIn.setAttribute("aria-label", "Comments");
+          coIn.addEventListener("input", function () {
+            entry.comments = coIn.value;
+            markDirtyDebouncedSheet();
+          });
+          cCo.appendChild(coIn);
+
+          var del = document.createElement("button");
+          del.type = "button";
+          del.className = "btn btn-danger-ghost btn-small del";
+          del.textContent = "Delete";
+          del.setAttribute("aria-label", "Delete entry");
+          del.addEventListener("click", function () {
+            state.record.entries = state.record.entries.filter(function (e) { return e.id !== entry.id; });
+            markDirty(); renderEntries(); renderSheet();
+            toast("Entry deleted");
+          });
+
+          row.appendChild(cDate); row.appendChild(cTr); row.appendChild(cCo); row.appendChild(del);
+          list.appendChild(row);
+        });
+      }
+
+      var sheetTimer = null;
+      function markDirtyDebouncedSheet() {
+        markDirty();
+        if (sheetTimer) clearTimeout(sheetTimer);
+        sheetTimer = setTimeout(renderSheet, 500);
+      }
+
+      function renderSheet() {
+        var p = state.record.profile;
+        var rows = reportRows(state.month);
+        var trs = rows.map(function (e) {
+          return "<tr><td class='d'>" + esc(fmtDate(e.date)) + "</td>" +
+            "<td class='t'><span class='rowtext'>" + esc(e.training) + "</span></td>" +
+            "<td><span class='rowtext'>" + esc(e.comments) + "</span></td></tr>";
+        }).join("");
+        var blanks = Math.max(0, 7 - rows.length);
+        for (var i = 0; i < blanks; i++) trs += "<tr class='blank'><td></td><td></td><td></td></tr>";
+        $("sheet").innerHTML =
+          "<div class='sheet-top'>SAMPLE FORM – COMPLETE THE FORM DIGITALLY AND ATTACH TO MONTHLY PROGRESS REPORT</div>" +
+          "<h3>Probationary Firefighter Training Record</h3>" +
+          "<p class='sheet-due'>(Due with Monthly Grading Report)</p>" +
+          "<div class='id-grid'>" +
+            "<div><div class='val'>" + esc(p.name) + "</div><div class='lbl'>Probationary Firefighter</div></div>" +
+            "<div><div class='val'>" + esc(p.company) + "</div><div class='lbl'>Company</div></div>" +
+            "<div><div class='val'>" + esc(p.shift) + "</div><div class='lbl'>Shift</div></div>" +
+            "<div><div class='val'>" + esc(p.captain) + "</div><div class='lbl'>Captain</div></div>" +
+          "</div>" +
+          "<table><thead><tr><th style='width:110px;'>Date</th><th style='width:34%;'>Training</th><th>Comments</th></tr></thead>" +
+          "<tbody>" + trs + "</tbody></table>" +
+          "<p class='sheet-foot'>" + esc(monthLabel(state.month)) + " · " + rows.length + (rows.length === 1 ? " entry" : " entries") + "</p>";
+        $("sheet-sub").textContent = monthLabel(state.month) + " — ready to attach to the Monthly Grading Report.";
+      }
+
+      /* ---------------- downloads ---------------- */
+      function downloadBackup() {
+        var blob = new Blob([JSON.stringify(state.record, null, 2)], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = FILE_NAME;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+        toast("Backup downloaded");
+      }
+
+      /* ---------------- wiring ---------------- */
+      function bindProfile() {
+        var map = { "f-name": "name", "f-company": "company", "f-shift": "shift", "f-captain": "captain", "f-officer": "officerEmail" };
+        Object.keys(map).forEach(function (id) {
+          $(id).addEventListener("input", function () {
+            state.record.profile[map[id]] = $(id).value;
+            markDirty();
+            if (id !== "f-officer") renderSheet();
+          });
+        });
+      }
+
+      function init() {
+        state.clientId = storeGet(LS_CLIENT_ID) || DEFAULT_CLIENT_ID;
+        if (state.clientId) {
+          $("input-clientid").value = state.clientId;
+          $("clientid-note").textContent = storeGet(LS_CLIENT_ID)
+            ? "Client ID saved in this browser. Sign-in is ready."
+            : "Client ID built into this page. Sign-in is ready.";
+        }
+
+        $("btn-save-clientid").addEventListener("click", function () {
+          var v = $("input-clientid").value.trim();
+          if (!v) { toast("Paste the Application (client) ID first", true); return; }
+          state.clientId = v;
+          state.pca = null;
+          storeSet(LS_CLIENT_ID, v);
+          $("clientid-note").textContent = "Client ID saved in this browser. Sign-in is ready.";
+          hideSigninMsg();
+          toast("Setup saved — you can sign in now");
+        });
+
+        $("btn-signin").addEventListener("click", signIn);
+        $("btn-preview").addEventListener("click", function () {
+          state.preview = true;
+          state.record = sampleRecord();
+          state.month = monthKeyOf(new Date());
+          enterApp();
+        });
+        $("btn-exit-preview").addEventListener("click", function () {
+          state.preview = false; state.record = null; showWelcome();
+        });
+        $("btn-signout").addEventListener("click", function () {
+          if (state.preview) { state.preview = false; state.record = null; showWelcome(); return; }
+          signOut();
+        });
+
+        bindProfile();
+
+        $("month-input").addEventListener("change", function () {
+          if ($("month-input").value) state.month = $("month-input").value;
+          state.showAll = false;
+          renderEntries(); renderSheet();
+        });
+        $("btn-show-all").addEventListener("click", function () {
+          state.showAll = !state.showAll;
+          renderEntries();
+        });
+        $("btn-add-entry").addEventListener("click", function () {
+          var entry = { id: uid(), date: state.showAll ? todayISO() : state.month + "-01", training: "", comments: "" };
+          if (!state.showAll) {
+            var today = todayISO();
+            if (today.slice(0, 7) === state.month) entry.date = today;
+          }
+          state.record.entries.push(entry);
+          markDirty(); renderEntries(); renderSheet();
+          var rows = $("entries-list").querySelectorAll(".entry-row");
+          var last = rows[rows.length - 1];
+          if (last) { var ta = last.querySelector("textarea"); if (ta) ta.focus(); }
+        });
+
+        $("btn-download").addEventListener("click", downloadBackup);
+        $("btn-send").addEventListener("click", sendReport);
+
+        $("officer-modal-cancel").addEventListener("click", function () {
+          $("officer-modal").classList.add("hidden");
+        });
+        $("officer-modal-save").addEventListener("click", async function () {
+          var v = $("officer-modal-input").value.trim();
+          if (!v || v.indexOf("@") < 1) { toast("Enter a valid email address", true); return; }
+          state.record.profile.officerEmail = v;
+          $("f-officer").value = v;
+          $("officer-modal").classList.add("hidden");
+          await saveRecord(true);
+          await doSendReport(v);
+        });
+
+        // Restore an existing Microsoft session silently, if there is one.
+        if (state.clientId && window.msal) {
+          (async function () {
+            try {
+              var pca = await ensurePca();
+              if (!pca) return;
+              try { await pca.handleRedirectPromise(); } catch (e) {}
+              var accounts = pca.getAllAccounts();
+              if (accounts.length) {
+                var acct = accounts[0];
+                if (/@phoenix\.gov$/i.test(acct.username || "")) {
+                  state.account = acct;
+                  state.email = acct.username;
+                  await afterSignIn();
+                }
+              }
+            } catch (e) { /* stay on the sign-in screen */ }
+          })();
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

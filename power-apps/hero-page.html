@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Probationary Firefighter Training Record — Hero</title>
+<!--
+  HERO PAGE for the Power Apps app.
+  This is a standalone page, styled to match the probationary website
+  (cream paper, red accent, Spectral / Libre Franklin).
+  It is NOT the training record itself — it is the front door:
+  the first thing a firefighter sees on the Power Apps main screen,
+  with one tap to their record and one tap to their saved file.
+
+  How to use it in Power Apps (full steps in power-apps/README.md):
+  - Option A (recommended): rebuild this layout as a native Power Apps
+    screen, and set the "Open my training record" button to
+    Launch("https://forgedreams-ai.github.io/probationary-training-record/")
+  - Option B: host this file and open it from Power Apps with Launch().
+    It works as a web page on its own, no sign-in here — sign-in
+    happens on the training record site itself.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Spectral:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f3efe7; --surface: #fffdf8; --surface-2: #faf5ec;
+    --ink: #1d1a15; --muted: #6f675a; --line: #ddd3c1; --line-strong: #c6bba3;
+    --accent: #a51f1f; --accent-hover: #8c1818; --accent-ink: #ffffff;
+    --ok: #2e7d43; --radius: 10px;
+    --shadow: 0 1px 2px rgba(29,26,21,.06), 0 8px 24px rgba(29,26,21,.07);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Libre Franklin", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px; line-height: 1.5; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 32px 16px 64px; text-align: center; }
+  .eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+  h1 { font-family: "Spectral", Georgia, serif; font-weight: 700;
+    font-size: clamp(30px, 6vw, 42px); line-height: 1.15; margin: 0 0 8px; }
+  .due { color: var(--muted); font-size: 15px; margin: 0 0 26px; }
+  .rule { height: 3px; background: var(--accent); border-radius: 2px; width: 72px; margin: 0 auto 26px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 24px; text-align: left; }
+  .card p { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+  .card p strong { color: var(--ink); }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    padding: 14px 18px; border-radius: 8px; border: 1px solid var(--line-strong);
+    background: var(--surface); color: var(--ink); font-weight: 700; font-size: 16px;
+    cursor: pointer; text-decoration: none; margin-top: 12px; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-hover); }
+  ul { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; text-align: left; }
+  li { display: flex; gap: 10px; font-size: 14.5px; color: var(--muted); }
+  li strong { color: var(--ink); }
+  .note { margin-top: 20px; font-size: 13.5px; color: var(--muted); text-align: center; }
+  code { font-size: 13px; background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 4px; padding: 1px 5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Phoenix Fire Department</p>
+  <h1>Probationary Firefighter Training Record</h1>
+  <p class="due">Due with Monthly Grading Report</p>
+  <div class="rule"></div>
+
+  <div class="card">
+    <p>Log your training, one row at a time — <strong>Date / Training / Comments</strong>.
+    Your record saves to <strong>your own OneDrive</strong>, under your
+    <strong>@phoenix.gov</strong> account. No one else can see it.</p>
+
+    <a class="btn btn-primary" href="https://forgedreams-ai.github.io/probationary-training-record/">Open my training record</a>
+    <a class="btn" href="https://forgedreams-ai.github.io/probationary-training-record/">View this month's report</a>
+    <a class="btn" href="https://onedrive.live.com/">My saved record in OneDrive</a>
+
+    <ul>
+      <li><span>🔒</span><span><strong>Only @phoenix.gov accounts get in.</strong> Any other email is turned away.</span></li>
+      <li><span>☁️</span><span><strong>One record file, in your OneDrive</strong> (<code>training-record.json</code>) — it follows your account to any device.</span></li>
+      <li><span>✉️</span><span><strong>Send each month's report to your training officer</strong> straight from the record, from your own mailbox.</span></li>
+    </ul>
+  </div>
+
+  <p class="note">Saved your record already? In the Power Apps app, your
+  <code>training-record.json</code> is already there to choose from when you
+  upload — see <strong>Upload from OneDrive</strong> in the app. No re-typing, no hunting for the file.</p>
+</div>
+</body>
+</html>

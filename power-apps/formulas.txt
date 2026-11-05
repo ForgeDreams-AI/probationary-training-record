@@ -1,0 +1,73 @@
+Power Apps formulas — Probationary Training Record hero + upload
+================================================================
+Paste these into a canvas app. Replace nothing else.
+App name / screen names are placeholders — use your app's actual names.
+
+HERO SCREEN (make this the first screen in the app)
+----------------------------------------------------
+Screen name:  HeroScreen
+  - Label (title):  "Probationary Firefighter Training Record"
+  - Label (sub):    "Due with Monthly Grading Report"
+  - Button "Open my training record"
+      OnSelect:
+        Launch("https://forgedreams-ai.github.io/probationary-training-record/")
+  - Button "My saved record in OneDrive"
+      OnSelect:
+        Launch("https://onedrive.live.com/")
+  - Button "Upload my record"  (goes to the upload screen)
+      OnSelect:
+        Navigate(UploadScreen)
+
+  To make Hero the main screen: in App > OnStart, or in the screen
+  list, move HeroScreen to the top. Power Apps opens the first
+  screen in the list.
+
+UPLOAD SCREEN — file is already there to choose from
+------------------------------------------------------
+1. Add a data source:  OneDrive  (Add data > OneDrive, sign in with
+   the user's @phoenix.gov account — same account as the website).
+
+2. Gallery / dropdown of saved files (already saved by the website,
+   see visible-copy-patch.md — folder "Probationary Training Record"):
+     Items:
+       OneDrive.ListFiles("Probationary Training Record")
+
+   Show in the gallery:
+     ThisItem.Name          e.g. training-record.json
+     ThisItem.DisplayName
+     ThisItem.LastModified
+
+   Filter to just the record, if you want only that one:
+     Filter(
+       OneDrive.ListFiles("Probationary Training Record"),
+       Name = "training-record.json"
+     )
+
+3. Button "Use this file" / Attachment control:
+   - If you use an Attachment control, its Items should be the
+     gallery selection above — the user taps the file that is
+     already listed, instead of browsing their device.
+   - OnSelect of the "Upload" button, pass the selected file to
+     whatever your app already does with uploads (flow / SharePoint /
+     Dataverse — use your existing upload action, do not invent a new
+     destination here).
+
+4. If the gallery is empty for a user, that means they have not
+   saved a record on the website yet (or the visible copy is not
+   turned on yet — see visible-copy-patch.md). Show this text:
+     "No saved record found yet. Open your training record,
+      sign in, and add one entry — it saves to your OneDrive,
+      then come back here and it will be listed."
+
+WHAT NOT TO DO
+--------------
+- Do not paste hero-page.html into an HTML text control and expect
+  the buttons to work — Power Apps strips scripts from HTML text,
+  and the links will not behave like the web page.
+- Do not point the OneDrive list at the App Folder
+  ("Apps/Probationary Firefighter Training Record") — that folder
+  is not reliably browsable from Power Apps. Use the visible
+  "Probationary Training Record" folder from visible-copy-patch.md.
+- Do not change the website's sign-in: the website still signs in
+  with @phoenix.gov and still saves to the private App Folder.
+  The visible copy is an *extra* copy, not a replacement.

@@ -1,86 +1,78 @@
-# Power Apps — Hero Page (branch: `power-apps-hero-page`)
+# Power Apps — Rebuild the Training Record (branch: `power-apps-hero-page`)
 
-This branch adds a hero page for the Probationary Firefighter Training
-Record to an **already-built Power Apps app**, as its new main screen.
-It does **not** change the live website on `main` — nothing here goes
-live until this branch is reviewed and merged.
+Rebuild the Probationary Firefighter Training Record **in Power
+Apps, as a standalone app**. No connection to any website, no link
+out to anyone else's site, no shared account, no client ID.
 
-Live website (unchanged): https://forgedreams-ai.github.io/probationary-training-record/
-Repo: ForgeDreams-AI/probationary-training-record
+The person rebuilding it builds their own Power Apps app from
+scratch, using the spec in this folder. They sign in with their own
+Microsoft account, and each firefighter's record saves to that
+firefighter's own OneDrive.
+
+This branch does **not** change the live website on `main` — nothing
+here goes live until it is reviewed.
 
 ## What is in this branch
 
 | File | What it is |
 |---|---|
-| `power-apps/hero-page.html` | The hero page itself, standalone, styled to match the website (cream paper, red accent). Title, due line, three big buttons: Open my training record / View this month's report / My saved record in OneDrive, plus the three privacy points from the site. |
-| `power-apps/formulas.txt` | Exact Power Apps expressions to paste in: hero screen buttons (`Launch(...)`), making the hero screen first, and the OneDrive file list for the upload screen. |
-| `power-apps/visible-copy-patch.md` | The one code change that makes the upload part work: also save a visible copy of the record to `Probationary Training Record/training-record.json` in OneDrive, so Power Apps can list it. Includes the exact JS snippet and the extra Graph permission needed. |
+| `power-apps/rebuild-spec.md` | The full rebuild spec, screen by screen: Hero (main screen), Record, Monthly Report, Upload — plus the data model, save/load, and sign-in (none to build). Read this first. |
+| `power-apps/formulas.txt` | Exact Power Apps expressions to paste in: collections, save to OneDrive as JSON, month filter, monthly report, PDF, send-to-officer email, and the upload file list. Native Power Apps only — no `Launch()`, no web URL. |
+| `power-apps/data-model.json` | Example `training-record.json` — the exact file format the rebuild saves and loads. |
 
-## How the hero page gets into Power Apps
+Deleted from the first draft of this branch, on purpose:
+`hero-page.html` (a web page that linked out to the website) and
+`visible-copy-patch.md` (a patch to the website) — both assumed a
+connection to the website. This rebuild has no such connection.
 
-Power Apps canvas apps do not run HTML/JS files directly, so there
-is no "drop this file in" step. Do this instead (about 10 minutes):
+## How to rebuild it
 
-1. In Power Apps Studio, open the already-built app.
-2. **Add a new screen** — name it `HeroScreen`.
-3. Rebuild the layout from `hero-page.html` with native controls:
-   title label, due label, and three buttons. Copy the wording
-   straight from the file so it matches the website.
-4. Set the buttons' `OnSelect` from `formulas.txt`:
-   - Open my training record → `Launch("https://forgedreams-ai.github.io/probationary-training-record/")`
-   - My saved record in OneDrive → `Launch("https://onedrive.live.com/")`
-   - Upload my record → `Navigate(UploadScreen)`
-5. **Make it the main screen:** move `HeroScreen` to the top of the
-   screen list. Power Apps opens the first screen in the list.
-6. Save and publish the app. The hero page is now the first thing
-   people see.
-
-Do **not** paste `hero-page.html` into an HTML text control — Power
-Apps strips scripts from those, and the buttons will not work.
-The HTML file here is the design reference and the standalone
-web version; the Power Apps screen is the native rebuild of it.
+1. In Power Apps Studio, create a **new canvas app** (blank).
+2. Add two connectors as data sources: **OneDrive** and
+   **Office365Outlook**. Both run as the signed-in user — no
+   shared account, no setup per firefighter.
+3. Build the four screens in `rebuild-spec.md`, in order:
+   `HeroScreen` → `RecordScreen` → `ReportScreen` →
+   `UploadScreen`.
+4. Make `HeroScreen` the first screen in the screen list — that
+   makes it the main screen. Every button on it navigates to
+   another screen inside the same app. Nothing launches a website.
+5. Paste the formulas from `formulas.txt` into the matching
+   controls.
+6. Save and publish the app.
 
 ## How "already there to choose from" works
 
-Today the website saves each record to the firefighter's OneDrive
-**App Folder** as `training-record.json`. That folder is private and
-correct, but Power Apps cannot reliably browse to it — so a user
-going to upload would have to hunt for the file.
+The Record screen saves the whole record as one file, every time,
+to the same visible folder in the firefighter's own OneDrive:
 
-With this branch's plan:
+```
+Probationary Training Record/training-record.json
+```
 
-1. Apply `visible-copy-patch.md` (one extra save in `index.html`):
-   every save also writes a copy to a normal, visible folder,
-   `Probationary Training Record/training-record.json`, in the same
-   OneDrive. The private App Folder copy stays as the real record.
-2. In Power Apps, add the **OneDrive** connector and bind the upload
-   screen's gallery/dropdown to:
-   `OneDrive.ListFiles("Probationary Training Record")`
-3. That list already contains `training-record.json` (and any monthly
-   PDFs saved there). The user taps the file that is already listed
-   instead of browsing for it. Exact expressions are in
-   `formulas.txt`.
+The Upload screen lists that exact folder:
 
-If a user's list is empty, they have not saved a record on the
-website yet — the app should tell them to open the training record,
-sign in, add one entry, and come back.
+```
+OneDrive.ListFiles("Probationary Training Record")
+```
 
-## Before this goes live
+So when a firefighter goes to upload, `training-record.json`
+(and any monthly PDFs they saved there) is already listed. They
+tap the file that is already there — they do not browse their
+device for it, and they do not re-type anything.
 
-Two things still need Anthony's call — the branch is built so either
-answer works, but do not merge until these are confirmed:
+If the list is empty, they have not saved a record yet. The app
+tells them to go to My training record, add one entry, save it,
+and come back — then it will be listed.
 
-1. **Which Power Apps app?** Name of the already-built app, and is it
-   a canvas app? (If it is a model-driven app, the hero goes in as a
-   web resource / dashboard instead, and the formulas change.)
-2. **What is the upload for?** What happens to the file after the
-   user picks it in Power Apps — where does it go (training officer,
-   SharePoint, Dataverse, a flow)? The formulas use the app's existing
-   upload action on purpose; no new destination was invented here.
-3. **Visible copy — yes or no?** The patch adds a second copy of the
-   record to a visible OneDrive folder. That is what makes the file
-   "already there" in Power Apps, but it is a new copy of people's
-   records, so it needs a yes before it is turned on.
+## What is deliberately NOT in this rebuild
+
+- No link or launch to any website
+- No GitHub Pages, no hosted page
+- No shared Azure app registration or client ID, no MSAL
+- No shared backend, database, or folder
+- No one else's records — every record lives in the firefighter's
+  own OneDrive, under their own account
 
 ## Branch
 
@@ -88,5 +80,4 @@ answer works, but do not merge until these are confirmed:
 git checkout power-apps-hero-page
 ```
 
-Review the three files above, answer the three questions, then merge
-to `main` only after the visible-copy patch is approved.
+Review `rebuild-spec.md` first, then `formulas.txt`.

@@ -1,73 +1,138 @@
-Power Apps formulas — Probationary Training Record hero + upload
-================================================================
-Paste these into a canvas app. Replace nothing else.
-App name / screen names are placeholders — use your app's actual names.
+Power Apps formulas — Probationary Training Record, standalone rebuild
+=======================================================================
+Native Power Apps only. No Launch(), no web URL, no client ID,
+no MSAL, no external site. The user signs in with their own
+Microsoft account through the connectors.
 
-HERO SCREEN (make this the first screen in the app)
+Collections used in the app:
+  colProfile  — one row: Name, Company, Shift, Captain, OfficerEmail
+  colEntries  — one row per entry: Id, Date, Training, Comments
+  varMonth    — text, "YYYY-MM", the month being viewed
+  varShowAll  — true/false, month filter on/off
+
+HERO SCREEN (HeroScreen — first screen in the app)
 ----------------------------------------------------
-Screen name:  HeroScreen
-  - Label (title):  "Probationary Firefighter Training Record"
-  - Label (sub):    "Due with Monthly Grading Report"
-  - Button "Open my training record"
-      OnSelect:
-        Launch("https://forgedreams-ai.github.io/probationary-training-record/")
-  - Button "My saved record in OneDrive"
-      OnSelect:
-        Launch("https://onedrive.live.com/")
-  - Button "Upload my record"  (goes to the upload screen)
-      OnSelect:
-        Navigate(UploadScreen)
+  Button "My training record"
+    OnSelect:  Navigate(RecordScreen)
+  Button "This month's report"
+    OnSelect:  Navigate(ReportScreen)
+  Button "Upload my saved record"
+    OnSelect:  Navigate(UploadScreen)
+  // No Launch() anywhere. Every button stays inside this app.
 
-  To make Hero the main screen: in App > OnStart, or in the screen
-  list, move HeroScreen to the top. Power Apps opens the first
-  screen in the list.
-
-UPLOAD SCREEN — file is already there to choose from
+APP START (App.OnStart) — load the user's own record
 ------------------------------------------------------
-1. Add a data source:  OneDrive  (Add data > OneDrive, sign in with
-   the user's @phoenix.gov account — same account as the website).
+  // OneDrive connector, signed in as the user.
+  // Folder: "Probationary Training Record"
+  // File:   "training-record.json"
+  // If the file is not there yet, start blank — first save creates it.
+  ClearCollect(
+    colProfile,
+    { Name: "", Company: "", Shift: "", Captain: "", OfficerEmail: "" }
+  );
+  ClearCollect(colEntries, []);
+  // Load the file if it exists, parse its JSON into the collections.
+  // (Use OneDrive.GetFileContent / a Power Automate flow to read the
+  //  JSON text, then JSON() / ParseJSON() into colProfile/colEntries.
+  //  Keep the file format exactly as in data-model.json.)
 
-2. Gallery / dropdown of saved files (already saved by the website,
-   see visible-copy-patch.md — folder "Probationary Training Record"):
-     Items:
-       OneDrive.ListFiles("Probationary Training Record")
+SAVE — RecordScreen, button "Save to my OneDrive"
+----------------------------------------------------
+  // Build the record JSON from the collections, same shape as
+  // data-model.json, then write it to the same folder every time.
+  Set(
+    varRecordJson,
+    JSON(
+      {
+        version: 1,
+        profile: First(colProfile),
+        entries: colEntries,
+        updatedAt: Text(Now(), DateTimeFormat.UTC)
+      },
+      JSONFormat.IndentFour
+    )
+  );
+  OneDrive.CreateFile(
+    "Probationary Training Record",
+    "training-record.json",
+    varRecordJson
+  );
+  // If CreateFile refuses to overwrite, delete the old file first
+  // with OneDrive.DeleteFile, then CreateFile again.
+  // Show: "Saved to your OneDrive · " & Text(Now(), "h:mm AM/PM")
 
-   Show in the gallery:
-     ThisItem.Name          e.g. training-record.json
-     ThisItem.DisplayName
-     ThisItem.LastModified
+ADD ENTRY — RecordScreen, button "+ Add entry"
+-----------------------------------------------
+  Collect(
+    colEntries,
+    {
+      Id: Text(Now(), "yyyymmddhhmmss") & Text(Rand(), "000"),
+      Date: Today(),
+      Training: "",
+      Comments: ""
+    }
+  );
 
-   Filter to just the record, if you want only that one:
-     Filter(
-       OneDrive.ListFiles("Probationary Training Record"),
-       Name = "training-record.json"
-     )
+MONTH FILTER — RecordScreen gallery
+------------------------------------
+  // Gallery Items, month filtered unless Show all is on:
+  If(
+    varShowAll,
+    Sort(colEntries, Date, SortOrder.Ascending),
+    Sort(
+      Filter(colEntries, Text(Date, "yyyy-mm") = varMonth),
+      Date, SortOrder.Ascending
+    )
+  );
 
-3. Button "Use this file" / Attachment control:
-   - If you use an Attachment control, its Items should be the
-     gallery selection above — the user taps the file that is
-     already listed, instead of browsing their device.
-   - OnSelect of the "Upload" button, pass the selected file to
-     whatever your app already does with uploads (flow / SharePoint /
-     Dataverse — use your existing upload action, do not invent a new
-     destination here).
+MONTHLY REPORT — ReportScreen
+------------------------------
+  // Table: this month's entries only, sorted by date:
+  Sort(
+    Filter(colEntries, Text(Date, "yyyy-mm") = varMonth),
+    Date, SortOrder.Ascending
+  );
 
-4. If the gallery is empty for a user, that means they have not
-   saved a record on the website yet (or the visible copy is not
-   turned on yet — see visible-copy-patch.md). Show this text:
-     "No saved record found yet. Open your training record,
-      sign in, and add one entry — it saves to your OneDrive,
-      then come back here and it will be listed."
+  // Save as PDF, to the same OneDrive folder:
+  //   Set(varPdf, PDF(ReportScreen));
+  //   OneDrive.CreateFile(
+  //     "Probationary Training Record",
+  //     "Monthly-Report-" & varMonth & ".pdf",
+  //     varPdf
+  //   );
+
+  // Send to training officer, from the user's own mailbox
+  // (Office365Outlook connector, signed in as the user):
+  //   Office365Outlook.SendEmailV2(
+  //     First(colProfile).OfficerEmail,
+  //     "Monthly Training Report — " & First(colProfile).Name,
+  //     "<html>…that month's entries as an HTML table…</html>"
+  //   );
+
+UPLOAD SCREEN (UploadScreen) — file already there to choose from
+------------------------------------------------------------------
+  // 1. OneDrive connector added as a data source, signed in as the user.
+  // 2. Gallery / dropdown, Items:
+  OneDrive.ListFiles("Probationary Training Record")
+  //    Already lists training-record.json (and any monthly PDFs),
+  //    because RecordScreen saves to that exact folder.
+  //    Show: ThisItem.Name, ThisItem.LastModified
+  //
+  // 3. Button "Use this file":
+  //    Pass the gallery's Selected item to your existing upload
+  //    action. Do not invent a new destination here.
+  //
+  // 4. If the gallery is empty, show:
+  //    "No saved record found yet. Go to My training record,
+  //     add one entry and save it — it will be listed here."
 
 WHAT NOT TO DO
 --------------
-- Do not paste hero-page.html into an HTML text control and expect
-  the buttons to work — Power Apps strips scripts from HTML text,
-  and the links will not behave like the web page.
-- Do not point the OneDrive list at the App Folder
-  ("Apps/Probationary Firefighter Training Record") — that folder
-  is not reliably browsable from Power Apps. Use the visible
-  "Probationary Training Record" folder from visible-copy-patch.md.
-- Do not change the website's sign-in: the website still signs in
-  with @phoenix.gov and still saves to the private App Folder.
-  The visible copy is an *extra* copy, not a replacement.
+- No Launch(), no web link, no hosted page.
+- No MSAL, no client ID, no redirect URL, no Azure registration.
+- Do not save to a hidden app folder — Power Apps cannot reliably
+  list hidden folders. Save to "Probationary Training Record",
+  the visible folder, every time, same file name every time.
+- Do not share one folder / one file between firefighters.
+  The OneDrive connector runs as the signed-in firefighter,
+  so each person only ever sees their own file.
